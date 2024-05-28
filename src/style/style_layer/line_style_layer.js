@@ -164,12 +164,16 @@ function offsetLine(rings: Array<Array<Point>>, offset: number) {
             const a = ring[i - 1];
             const b = ring[i];
             const c = ring[i + 1];
-            const aToB = i === 0 ? zero : b.sub(a)._unit()._perp();
-            const bToC = i === ring.length - 1 ? zero : c.sub(b)._unit()._perp();
-            const extrude = aToB._add(bToC)._unit();
+            //const aToB = i === 0 ? zero : b.sub(a)._unit()._perp();
+            //const bToC = i === ring.length - 1 ? zero : c.sub(b)._unit()._perp();
+            //const extrude = aToB._add(bToC)._unit();
 
+            const aToB = i === 0 ? zero.clone() : b.sub(a)._unit()._perp();
+            const bToC = i === ring.length - 1 ? zero.clone() : c.sub(b)._unit()._perp();
+            const extrude = aToB._add(bToC)._unit();
             const cosHalfAngle = extrude.x * bToC.x + extrude.y * bToC.y;
-            extrude._mult(1 / cosHalfAngle);
+            if (cosHalfAngle !== 0)
+                extrude._mult(1 / cosHalfAngle);
 
             newRing.push(extrude._mult(offset)._add(b));
         }
